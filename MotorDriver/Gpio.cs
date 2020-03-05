@@ -23,7 +23,7 @@ namespace MotorDriver
     {
       logger.LogInformation("Initializing GPIO controller...");
 
-      if(pinMapping is null && pinMapping.Count() == 0)
+      if(pinMapping is null || pinMapping.Count() == 0)
       {
         logger.LogError("PinMapping is empty");
         throw new ArgumentNullException(nameof(pinMapping));
@@ -31,7 +31,15 @@ namespace MotorDriver
 
       this.pinMapping = pinMapping;
 
-      OpenPins();
+      foreach (var pin in pinMapping)
+      {
+        OpenPin(pin.PinInput1);
+        OpenPin(pin.PinInput2);
+        OpenPin(pin.PinPwm);
+        OpenPin(pin.PinStandBy);
+      }
+
+      logger.LogInformation($"Opened pins from {pinMapping.Count()} mappings.");
     }
 
     public void Dispose()
@@ -42,17 +50,12 @@ namespace MotorDriver
       }
     }
 
-    private void OpenPins()
+    private void OpenPin(int pinNumber)
     {
-      foreach (var pin in pinMapping)
-      {
-        controller.OpenPin(pin.PinInput1, PinMode.Output);
-        controller.OpenPin(pin.PinInput2, PinMode.Output);
-        controller.OpenPin(pin.PinPwm, PinMode.Output);
-        controller.OpenPin(pin.PinStandBy, PinMode.Output);
-      }
+      if (pinNumber == 0)
+        return;
 
-      logger.LogInformation($"Opened pins from {pinMapping.Count()} mappings.");
+      controller.OpenPin(pinNumber, PinMode.Output);
     }
   }
 }

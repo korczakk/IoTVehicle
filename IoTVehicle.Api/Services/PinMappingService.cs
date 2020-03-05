@@ -27,7 +27,7 @@ namespace IoTVehicle.Api.Services
         .Get<PinMapping>(x => x.BindNonPublicProperties = true);
 
       var mappingForMotor2 = configuration
-        .GetSection("PinMappings:0")
+        .GetSection("PinMappings:2")
         .Get<PinMapping>(x => x.BindNonPublicProperties = true);
 
       if(mappingForMotor1 is null || mappingForMotor2 is null)

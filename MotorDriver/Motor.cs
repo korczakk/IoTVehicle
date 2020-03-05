@@ -4,7 +4,7 @@ using System.Device.Gpio;
 
 namespace MotorDriver
 {
-  public class Motor : IDisposable
+  public class Motor : IDisposable, IMotor
   {
     private IPinMapping pinMapping;
     private readonly ILogger logger;
@@ -37,7 +37,7 @@ namespace MotorDriver
           logger.LogError($"Trying to start engine with unknown direction parameter: {direction}");
           break;
       }
-      
+
       controller.Write(pinMapping.PinPwm, PinValue.High);
       controller.Write(pinMapping.PinStandBy, PinValue.High);
 

@@ -35,6 +35,21 @@ namespace IoTVehicle.Api
 
         return mappingService;
       });
+      services.AddSingleton<IGpio>(sp =>
+      {
+        var gpio = new Gpio(sp.GetService<ILogger<Gpio>>());
+        var mappings = sp.GetService<IPinMappingService>().GetAllMappings();
+        gpio.Initialize(mappings);
+
+        return gpio;
+      });
+      services.AddTransient<IMotor>(sp =>
+      {
+        var gpio = sp.GetService<IGpio>();
+        var logger = sp.GetService<ILogger<Motor>>();
+        
+        return new Motor(gpio, logger);
+      });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +68,7 @@ namespace IoTVehicle.Api
               {
                 var serv = context.RequestServices;
                 var mappingService = serv.GetService<IPinMappingService>();
+                var motor = serv.GetService<IMotor>();
 
             await context.Response.WriteAsync(mappingService.GetAllMappings().Count().ToString());
           });
