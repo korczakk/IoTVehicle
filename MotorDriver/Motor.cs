@@ -1,19 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 using System.Device.Gpio;
 
 namespace MotorDriver
 {
-  public class Motor : IDisposable, IMotor
+  public class Motor : IMotor
   {
     private IPinMapping pinMapping;
     private readonly ILogger logger;
-    private readonly GpioController controller;
+    private readonly IGpio gpioController;
 
     public Motor(IGpio gpio, ILogger logger)
     {
       this.logger = logger;
-      this.controller = gpio.controller;
+      this.gpioController = gpio;
     }
 
     public void Initialize(IPinMapping pinMapping)
@@ -26,36 +25,31 @@ namespace MotorDriver
       switch (direction)
       {
         case RotateDirection.ClockWise:
-          controller.Write(pinMapping.PinInput1, PinValue.High);
-          controller.Write(pinMapping.PinInput2, PinValue.Low);
+          gpioController.SetPin(pinMapping.PinInput1, PinValue.High);
+          gpioController.SetPin(pinMapping.PinInput2, PinValue.Low);
           break;
         case RotateDirection.CounterClockWise:
-          controller.Write(pinMapping.PinInput1, PinValue.Low);
-          controller.Write(pinMapping.PinInput2, PinValue.High);
+          gpioController.SetPin(pinMapping.PinInput1, PinValue.Low);
+          gpioController.SetPin(pinMapping.PinInput2, PinValue.High);
           break;
         default:
-          logger.LogError($"Trying to start engine with unknown direction parameter: {direction}");
+          logger.LogError($"Trying to start engine with unknown direction parameter: {direction.ToString()}");
           break;
       }
 
-      controller.Write(pinMapping.PinPwm, PinValue.High);
-      controller.Write(pinMapping.PinStandBy, PinValue.High);
+      gpioController.SetPin(pinMapping.PinPwm, PinValue.High);
+      gpioController.SetPin(pinMapping.PinStandBy, PinValue.High);
 
-      logger.LogInformation($"Starting motor in {direction} direction.");
+      logger.LogInformation($"Starting motor in {direction.ToString()} direction.");
     }
 
     public void StopMotor()
     {
-      controller.Write(pinMapping.PinInput1, PinValue.Low);
-      controller.Write(pinMapping.PinInput2, PinValue.Low);
-      controller.Write(pinMapping.PinPwm, PinValue.Low);
+      gpioController.SetPin(pinMapping.PinInput1, PinValue.Low);
+      gpioController.SetPin(pinMapping.PinInput2, PinValue.Low);
+      gpioController.SetPin(pinMapping.PinPwm, PinValue.Low);
 
       logger.LogInformation("Motor has been stopped");
-    }
-
-    public void Dispose()
-    {
-      controller.Dispose();
     }
   }
 }
