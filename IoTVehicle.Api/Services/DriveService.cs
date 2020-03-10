@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using MotorDriver;
+using System;
+using System.Threading.Tasks;
 
 namespace IoTVehicle.Api.Services
 {
-    public class DriveService
+    public class DriveService : IDriveService
     {
         private readonly IMotor motor1;
         private readonly IMotor motor2;
@@ -18,45 +20,50 @@ namespace IoTVehicle.Api.Services
 
         public void GoForward()
         {
-            motor1.StopMotor();
-            motor2.StopMotor();
-
-            motor1.StartMotor(RotateDirection.ClockWise);
-            motor2.StartMotor(RotateDirection.ClockWise);
+            motor1.StartClockWise();
+            motor2.StartClockWise();
 
             logger.LogInformation("Moving forward.");
         }
 
         public void GoBackward()
         {
-            motor1.StopMotor();
-            motor2.StopMotor();
-
-            motor1.StartMotor(RotateDirection.CounterClockWise);
-            motor2.StartMotor(RotateDirection.CounterClockWise);
+            motor1.StartCounterClockWise();
+            motor2.StartCounterClockWise();
 
             logger.LogInformation("Moving backward.");
         }
 
-        public void TurnLeft()
+        public async Task TurnLeft()
         {
-            // stop motor2
-            // start motor1
-            // wait for 2 sec
-            // start motor1 to move on boath wheels
+            motor1.Stop();
 
-            logger.LogInformation("Turning left.");
+            motor2.StartClockWise();
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            motor1.StartClockWise();
+
+            logger.LogInformation("Turned left.");
         }
 
-        public void TurnRight()
+        public async Task TurnRight()
         {
+            motor2.Stop();
 
+            motor1.StartClockWise();
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            motor2.StartClockWise();
+
+            logger.LogInformation("Turned right.");
         }
 
         public void StopDrive()
         {
-            motor1.StopMotor();
-            motor2.StopMotor();
+            motor1.Stop();
+            motor2.Stop();
 
             logger.LogInformation("All stop.");
         }

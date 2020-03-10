@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IoTVehicle.Api.EndPoints;
 using IoTVehicle.Api.FakeClasses;
 using IoTVehicle.Api.Services;
 using Microsoft.AspNetCore.Builder;
@@ -51,6 +52,15 @@ namespace IoTVehicle.Api
 
                 return new Motor(gpio, logger);
             });
+
+            services.AddTransient<IDriveService>(sp =>
+            {
+                var logger = sp.GetService<ILogger<Motor>>();
+                var motor1 = sp.GetService<IMotor>();
+                var motor2 = sp.GetService<IMotor>();
+
+                return new DriveService(motor1, motor2, logger);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,14 +75,9 @@ namespace IoTVehicle.Api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                        var serv = context.RequestServices;
-                        var mappingService = serv.GetService<IPinMappingService>();
-                        var motor = serv.GetService<IMotor>();
+                endpoints.MapGet("/", VehicleEndpoints.Index);
+                endpoints.MapGet("/goforward", VehicleEndpoints.GoForward);
 
-                        await context.Response.WriteAsync(mappingService.GetAllMappings().Count().ToString());
-                    });
             });
 
             appLifetime.ApplicationStopping.Register(OnShuttingDown, app.ApplicationServices);

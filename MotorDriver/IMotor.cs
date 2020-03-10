@@ -1,9 +1,13 @@
 ﻿namespace MotorDriver
 {
-  public interface IMotor
-  {
-    void Initialize(IPinMapping pinMapping);
-    void StartMotor(RotateDirection direction);
-    void StopMotor();
-  }
+    public interface IMotor
+    {
+        void Initialize(IPinMapping pinMapping);
+
+        void StartClockWise();
+
+        void StartCounterClockWise();
+
+        void Stop();
+    }
 }

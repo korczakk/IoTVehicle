@@ -3,53 +3,90 @@ using System.Device.Gpio;
 
 namespace MotorDriver
 {
-  public class Motor : IMotor
-  {
-    private IPinMapping pinMapping;
-    private readonly ILogger logger;
-    private readonly IGpio gpioController;
-
-    public Motor(IGpio gpio, ILogger logger)
+    public class Motor : IMotor
     {
-      this.logger = logger;
-      this.gpioController = gpio;
+        private IPinMapping pinMapping;
+        private readonly ILogger logger;
+        private readonly IGpio gpioController;
+        private MotorState motorState;
+
+        public Motor(IGpio gpio, ILogger logger)
+        {
+            this.logger = logger;
+            this.gpioController = gpio;
+        }
+
+        public void Initialize(IPinMapping pinMapping)
+        {
+            this.pinMapping = pinMapping;
+            this.motorState = GetMotorState();
+        }
+
+        /// <summary>
+        /// When the motor state is different than spinning clockwise then it first stops motor and then starts in clockwise
+        /// direction.
+        /// </summary>
+        public void StartClockWise()
+        {
+            if (motorState != MotorState.SpinningClockWise)
+            {
+                Stop();
+
+                gpioController.SetPin(pinMapping.PinInput1, PinValue.High);
+                gpioController.SetPin(pinMapping.PinInput2, PinValue.Low);
+
+                gpioController.SetPin(pinMapping.PinPwm, PinValue.High);
+                gpioController.SetPin(pinMapping.PinStandBy, PinValue.High);
+
+                logger.LogInformation("Starting motor in clockwise direction.");
+            }
+        }
+
+        /// <summary>
+        /// When the motor state is different than spinning counter-clockwise then it first stops motor and then starts in 
+        /// counter-clockwise direction.
+        /// </summary>
+        public void StartCounterClockWise()
+        {
+            if (motorState != MotorState.SpinningCounterClockWise)
+            {
+                Stop();
+
+                gpioController.SetPin(pinMapping.PinInput1, PinValue.Low);
+                gpioController.SetPin(pinMapping.PinInput2, PinValue.High);
+
+                gpioController.SetPin(pinMapping.PinPwm, PinValue.High);
+                gpioController.SetPin(pinMapping.PinStandBy, PinValue.High);
+
+                logger.LogInformation("Starting motor in counter-clockwise direction.");
+            }
+        }
+
+        public void Stop()
+        {
+            gpioController.SetPin(pinMapping.PinInput1, PinValue.Low);
+            gpioController.SetPin(pinMapping.PinInput2, PinValue.Low);
+            gpioController.SetPin(pinMapping.PinPwm, PinValue.Low);
+
+            logger.LogInformation("Motor has been stopped");
+        }
+
+        private MotorState GetMotorState()
+        {
+            var input1 = this.gpioController.ReadPin(pinMapping.PinInput1);
+            var input2 = this.gpioController.ReadPin(pinMapping.PinInput2);
+            var pwm = this.gpioController.ReadPin(pinMapping.PinPwm);
+
+            if (input1 == PinValue.High && input2 == PinValue.Low && pwm == PinValue.High)
+            {
+                return MotorState.SpinningClockWise;
+            }
+            else if (input1 == PinValue.Low && input2 == PinValue.High && pwm == PinValue.High)
+            {
+                return MotorState.SpinningCounterClockWise;
+            }
+                
+            return MotorState.Stopped;
+        }
     }
-
-    public void Initialize(IPinMapping pinMapping)
-    {
-      this.pinMapping = pinMapping;
-    }
-
-    public void StartMotor(RotateDirection direction)
-    {
-      switch (direction)
-      {
-        case RotateDirection.ClockWise:
-          gpioController.SetPin(pinMapping.PinInput1, PinValue.High);
-          gpioController.SetPin(pinMapping.PinInput2, PinValue.Low);
-          break;
-        case RotateDirection.CounterClockWise:
-          gpioController.SetPin(pinMapping.PinInput1, PinValue.Low);
-          gpioController.SetPin(pinMapping.PinInput2, PinValue.High);
-          break;
-        default:
-          logger.LogError($"Trying to start engine with unknown direction parameter: {direction.ToString()}");
-          break;
-      }
-
-      gpioController.SetPin(pinMapping.PinPwm, PinValue.High);
-      gpioController.SetPin(pinMapping.PinStandBy, PinValue.High);
-
-      logger.LogInformation($"Starting motor in {direction.ToString()} direction.");
-    }
-
-    public void StopMotor()
-    {
-      gpioController.SetPin(pinMapping.PinInput1, PinValue.Low);
-      gpioController.SetPin(pinMapping.PinInput2, PinValue.Low);
-      gpioController.SetPin(pinMapping.PinPwm, PinValue.Low);
-
-      logger.LogInformation("Motor has been stopped");
-    }
-  }
 }

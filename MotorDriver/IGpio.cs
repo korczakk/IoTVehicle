@@ -9,5 +9,7 @@ namespace MotorDriver
         void Initialize(IEnumerable<IPinMapping> pinMapping);
 
         void SetPin(int pinNumber, PinValue pinValue);
+
+        PinValue ReadPin(int pinNumber);
     }
 }

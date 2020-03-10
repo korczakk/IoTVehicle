@@ -54,6 +54,11 @@ namespace MotorDriver
             }
         }
 
+        public PinValue ReadPin(int pinNumber)
+        {
+            return controller.Read(pinNumber);
+        }
+
         private void OpenPin(int pinNumber)
         {
             if (pinNumber == 0)
