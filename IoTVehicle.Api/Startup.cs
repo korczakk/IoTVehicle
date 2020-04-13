@@ -78,8 +78,10 @@ namespace IoTVehicle.Api
       {
         endpoints.MapGet("/", VehicleEndpoints.Index);
         endpoints.MapGet("/goforward", VehicleEndpoints.GoForward);
-
-
+        endpoints.MapGet("/gobackward", VehicleEndpoints.GoBackward);
+        endpoints.MapGet("/stop", VehicleEndpoints.Stop);
+        endpoints.MapGet("/turnleft", VehicleEndpoints.TurnLeft);
+        endpoints.MapGet("/turnright", VehicleEndpoints.TurnRight);
       });
 
       appLifetime.ApplicationStopping.Register(OnShuttingDown, app.ApplicationServices);
