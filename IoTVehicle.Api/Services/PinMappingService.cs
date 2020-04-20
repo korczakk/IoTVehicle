@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using IoT.Shared;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MotorDriver;
 using System;
 using System.Collections.Generic;
 

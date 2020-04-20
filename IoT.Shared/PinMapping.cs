@@ -1,4 +1,4 @@
-﻿namespace MotorDriver
+﻿namespace IoT.Shared
 {
   public class PinMapping : IPinMapping
   {

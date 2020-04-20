@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using MotorDriver;
+﻿using IoT.Shared;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Device.Gpio;
 

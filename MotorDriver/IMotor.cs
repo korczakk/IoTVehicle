@@ -1,4 +1,6 @@
-﻿namespace MotorDriver
+﻿using IoT.Shared;
+
+namespace MotorDriver
 {
     public interface IMotor
     {

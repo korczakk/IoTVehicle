@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using IoT.Shared;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Device.Gpio;
 

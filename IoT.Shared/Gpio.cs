@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Device.Gpio;
 using System.Linq;
 
-namespace MotorDriver
+namespace IoT.Shared
 {
   public class Gpio : IGpio
   {

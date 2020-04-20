@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Device.Gpio;
 
-namespace MotorDriver
+namespace IoT.Shared
 {
     public interface IGpio : IDisposable
     {
