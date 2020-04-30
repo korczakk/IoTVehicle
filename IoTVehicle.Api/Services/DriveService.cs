@@ -9,9 +9,9 @@ namespace IoTVehicle.Api.Services
   {
     private readonly IMotor motor1;
     private readonly IMotor motor2;
-    private readonly ILogger logger;
+    private readonly ILogger<DriveService> logger;
 
-    public DriveService(IMotor motor1, IMotor motor2, ILogger logger)
+    public DriveService(IMotor motor1, IMotor motor2, ILogger<DriveService> logger)
     {
       this.motor1 = motor1;
       this.motor2 = motor2;

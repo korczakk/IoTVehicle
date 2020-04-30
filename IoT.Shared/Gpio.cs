@@ -10,7 +10,7 @@ namespace IoT.Shared
   {
     private readonly GpioController controller;
     private readonly ILogger logger;
-    private IEnumerable<IPinMapping> pinMapping;
+    private IEnumerable<IPin> pinMapping;
     private Dictionary<int, PinValue> pinState = new Dictionary<int, PinValue>();
 
     public Gpio(ILogger logger)
@@ -19,7 +19,7 @@ namespace IoT.Shared
       this.logger = logger;
     }
 
-    public void Initialize(IEnumerable<IPinMapping> pinMapping)
+    public void Initialize(IEnumerable<IPin> pinMapping)
     {
       logger.LogInformation("Initializing GPIO controller...");
 
@@ -33,10 +33,7 @@ namespace IoT.Shared
 
       foreach (var pin in pinMapping)
       {
-        OpenPin(pin.PinInput1);
-        OpenPin(pin.PinInput2);
-        OpenPin(pin.PinPwm);
-        OpenPin(pin.PinStandBy);
+        OpenPin(pin);
       }
 
       logger.LogInformation($"Opened pins from {pinMapping.Count()} mappings.");
@@ -68,20 +65,20 @@ namespace IoT.Shared
     {
       if (pinNumber == 0)
       {
-        logger.LogInformation("I will not read from PIN 0 to any value.");
+        logger.LogInformation("I will not read from PIN 0.");
         return PinValue.Low;
       }
 
       return pinState[pinNumber];
     }
 
-    private void OpenPin(int pinNumber)
+    private void OpenPin(IPin pin)
     {
-      if (pinNumber == 0)
+      if (pin.PinNumber == 0)
         return;
 
-      controller.OpenPin(pinNumber, PinMode.Output);
-      pinState.Add(pinNumber, PinValue.Low);
+      controller.OpenPin(pin.PinNumber, pin.Mode);
+      pinState.Add(pin.PinNumber, PinValue.Low);
     }
   }
 }

@@ -1,18 +1,20 @@
 ﻿using IoT.Shared;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Device.Gpio;
+using System.Linq;
 
 namespace MotorDriver
 {
   public class Motor : IMotor
   {
-    private IPinMapping pinMapping;
+    private IDictionary<MotorPinNames, MotorPin> pinMapping;
     private readonly ILogger logger;
     private readonly IGpio gpioController;
     private MotorState motorState;
 
-    public Motor(IGpio gpio, ILogger logger)
+    public Motor(IGpio gpio, ILogger<Motor> logger)
     {
       if (gpio is null)
       {
@@ -23,14 +25,14 @@ namespace MotorDriver
       this.gpioController = gpio;
     }
 
-    public void Initialize(IPinMapping pinMapping)
+    public void Initialize(IEnumerable<MotorPin> pinMapping)
     {
       if (pinMapping is null)
       {
         throw new ArgumentNullException("PinMapping can not be null.");
       }
 
-      this.pinMapping = pinMapping;
+      this.pinMapping = pinMapping.ToDictionary(x => x.PinName);
       this.motorState = GetMotorState();
     }
 
@@ -44,11 +46,11 @@ namespace MotorDriver
       {
         Stop();
 
-        gpioController.SetPin(pinMapping.PinInput1, PinValue.High);
-        gpioController.SetPin(pinMapping.PinInput2, PinValue.Low);
+        gpioController.SetPin(pinMapping[MotorPinNames.Input1].PinNumber, PinValue.High);
+        gpioController.SetPin(pinMapping[MotorPinNames.Input2].PinNumber, PinValue.Low);
 
-        gpioController.SetPin(pinMapping.PinPwm, PinValue.High);
-        gpioController.SetPin(pinMapping.PinStandBy, PinValue.High);
+        gpioController.SetPin(pinMapping[MotorPinNames.Pwm].PinNumber, PinValue.High);
+        gpioController.SetPin(pinMapping[MotorPinNames.StandBy].PinNumber, PinValue.High);
 
         logger.LogInformation("Starting motor in clockwise direction.");
       }
@@ -64,11 +66,11 @@ namespace MotorDriver
       {
         Stop();
 
-        gpioController.SetPin(pinMapping.PinInput1, PinValue.Low);
-        gpioController.SetPin(pinMapping.PinInput2, PinValue.High);
+        gpioController.SetPin(pinMapping[MotorPinNames.Input1].PinNumber, PinValue.Low);
+        gpioController.SetPin(pinMapping[MotorPinNames.Input2].PinNumber, PinValue.High);
 
-        gpioController.SetPin(pinMapping.PinPwm, PinValue.High);
-        gpioController.SetPin(pinMapping.PinStandBy, PinValue.High);
+        gpioController.SetPin(pinMapping[MotorPinNames.Pwm].PinNumber, PinValue.High);
+        gpioController.SetPin(pinMapping[MotorPinNames.StandBy].PinNumber, PinValue.High);
 
         logger.LogInformation("Starting motor in counter-clockwise direction.");
       }
@@ -76,18 +78,18 @@ namespace MotorDriver
 
     public void Stop()
     {
-      gpioController.SetPin(pinMapping.PinInput1, PinValue.Low);
-      gpioController.SetPin(pinMapping.PinInput2, PinValue.Low);
-      gpioController.SetPin(pinMapping.PinPwm, PinValue.Low);
+      gpioController.SetPin(pinMapping[MotorPinNames.Input1].PinNumber, PinValue.Low);
+      gpioController.SetPin(pinMapping[MotorPinNames.Input2].PinNumber, PinValue.Low);
+      gpioController.SetPin(pinMapping[MotorPinNames.Pwm].PinNumber, PinValue.Low);
 
       logger.LogInformation("Motor has been stopped");
     }
 
     private MotorState GetMotorState()
     {
-      var input1 = this.gpioController.ReadPin(pinMapping.PinInput1);
-      var input2 = this.gpioController.ReadPin(pinMapping.PinInput2);
-      var pwm = this.gpioController.ReadPin(pinMapping.PinPwm);
+      var input1 = this.gpioController.ReadPin(pinMapping[MotorPinNames.Input1].PinNumber);
+      var input2 = this.gpioController.ReadPin(pinMapping[MotorPinNames.Input2].PinNumber);
+      var pwm = this.gpioController.ReadPin(pinMapping[MotorPinNames.Pwm].PinNumber);
 
       if (input1 == PinValue.High && input2 == PinValue.Low && pwm == PinValue.High)
       {

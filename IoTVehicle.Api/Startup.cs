@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using IoT.Shared;
 using IoTVehicle.Api.EndPoints;
 using IoTVehicle.Api.FakeClasses;
+using IoTVehicle.Api.PinMappings;
 using IoTVehicle.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,17 +32,22 @@ namespace IoTVehicle.Api
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddLogging(x => x.AddConsole());
-      services.AddSingleton<IPinMappingService>(sp =>
+      services.AddTransient<IMotorPinMapping>(sp =>
       {
-        var mappingService = new PinMappingService(sp.GetService<ILogger<PinMappingService>>(), configuration);
-        mappingService.CreateMappings();
-
-        return mappingService;
+        return new MotorPinMapping(configuration);
       });
       services.AddSingleton<IGpio>(sp =>
       {
-        var gpio = new Gpio(sp.GetService<ILogger<Gpio>>());
-        var mappings = sp.GetService<IPinMappingService>().GetAllMappings();
+        var gpio = new FakeGpio(sp.GetService<ILogger<Gpio>>());
+        var motorPinMapping = sp.GetService<IMotorPinMapping>();
+
+        var mappings = new List<IPin>();
+        mappings.AddRange(motorPinMapping.CreatePinMapping(1).ToList());
+        mappings.AddRange(motorPinMapping.CreatePinMapping(2).ToList());
+
+        // get mapping for Distance sensor
+
+
         gpio.Initialize(mappings);
 
         return gpio;
@@ -53,13 +59,12 @@ namespace IoTVehicle.Api
 
         return new Motor(gpio, logger);
       });
-
       services.AddTransient<IDriveServiceFactory>(sp =>
       {
-        var logger = sp.GetService<ILogger<IDriveServiceFactory>>();
+        var logger = sp.GetService<ILogger<DriveService>>();
         var motor1 = sp.GetService<IMotor>();
         var motor2 = sp.GetService<IMotor>();
-        var pinMappingService = sp.GetService<IPinMappingService>();
+        var pinMappingService = sp.GetService<IMotorPinMapping>();
 
         return new DriveServiceFactory(motor1, motor2, pinMappingService, logger);
       });

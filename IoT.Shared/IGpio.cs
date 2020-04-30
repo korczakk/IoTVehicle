@@ -6,7 +6,7 @@ namespace IoT.Shared
 {
     public interface IGpio : IDisposable
     {
-        void Initialize(IEnumerable<IPinMapping> pinMapping);
+        void Initialize(IEnumerable<IPin> pinMapping);
 
         void SetPin(int pinNumber, PinValue pinValue);
 

@@ -9,7 +9,7 @@ namespace IoTVehicle.Api.FakeClasses
   {
     private readonly ILogger logger;
     private Dictionary<int, PinValue> pinState = new Dictionary<int, PinValue>();
-    private IEnumerable<IPinMapping> pinMapping;
+    private IEnumerable<IPin> pinMapping;
 
     public FakeGpio(ILogger logger)
     {
@@ -21,7 +21,7 @@ namespace IoTVehicle.Api.FakeClasses
       logger.LogInformation("Fake GPIO object disposed");
     }
 
-    public void Initialize(IEnumerable<IPinMapping> pinMapping)
+    public void Initialize(IEnumerable<IPin> pinMapping)
     {
       logger.LogInformation("Initializing GPIO controller...");
       
@@ -29,10 +29,7 @@ namespace IoTVehicle.Api.FakeClasses
 
       foreach (var pin in pinMapping)
       {
-        pinState.Add(pin.PinInput1, PinValue.Low);
-        pinState.Add(pin.PinInput2, PinValue.Low);
-        pinState.Add(pin.PinPwm, PinValue.Low);
-        pinState.Add(pin.PinStandBy, PinValue.Low);
+        pinState.Add(pin.PinNumber, PinValue.Low);
       }
     }
 
