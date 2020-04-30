@@ -52,7 +52,7 @@ namespace MotorDriver
         gpioController.SetPin(pinMapping[MotorPinNames.Pwm].PinNumber, PinValue.High);
         gpioController.SetPin(pinMapping[MotorPinNames.StandBy].PinNumber, PinValue.High);
 
-        logger.LogInformation("Starting motor in clockwise direction.");
+        logger.LogInformation($"Starting motor in clockwise direction on {DateTime.Now.ToString("hh:mm:ss.fff")}.");
       }
     }
 
