@@ -38,7 +38,7 @@ namespace IoTVehicle.Api
       });
       services.AddSingleton<IGpio>(sp =>
       {
-        var gpio = new FakeGpio(sp.GetService<ILogger<Gpio>>());
+        var gpio = new Gpio(sp.GetService<ILogger<Gpio>>());
         var motorPinMapping = sp.GetService<IMotorPinMapping>();
 
         var mappings = new List<IPin>();
