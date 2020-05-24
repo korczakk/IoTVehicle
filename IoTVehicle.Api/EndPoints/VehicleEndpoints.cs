@@ -1,4 +1,5 @@
-﻿using IoTVehicle.Api.Services;
+﻿using DistanceSensor;
+using IoTVehicle.Api.Services;
 using Microsoft.AspNetCore.Http;
 using MotorDriver;
 using System;
@@ -58,6 +59,16 @@ namespace IoTVehicle.Api.EndPoints
     public static async Task Index(HttpContext context)
     {
       await context.Response.WriteAsync("Possible endpoints: GoForward, GoBackWard, TurnLeft, TurnRight");
+    }
+
+    public static async Task MeasureDistance(HttpContext context)
+    {
+      var services = context.RequestServices;
+      var sensorDriver = services.GetService(typeof(IDistanceSensorDriver)) as IDistanceSensorDriver;
+
+      var measurement = await sensorDriver.MeasureDistance();
+
+      await context.Response.WriteAsync(measurement.ToString());
     }
 
     private static IDriveService GetDriveService(HttpContext context)

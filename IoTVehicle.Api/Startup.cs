@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DistanceSensor;
 using IoT.Shared;
 using IoTVehicle.Api.EndPoints;
 using IoTVehicle.Api.FakeClasses;
@@ -36,17 +37,17 @@ namespace IoTVehicle.Api
       {
         return new MotorPinMapping(configuration);
       });
+      services.AddTransient<IDistanceSensorPinMapping>(sp => new DistanceSensorPinMapping(configuration));
       services.AddSingleton<IGpio>(sp =>
       {
         var gpio = new Gpio(sp.GetService<ILogger<Gpio>>());
         var motorPinMapping = sp.GetService<IMotorPinMapping>();
+        var distanceSensorPinMapping = sp.GetService<IDistanceSensorPinMapping>();
 
         var mappings = new List<IPin>();
-        mappings.AddRange(motorPinMapping.CreatePinMapping(1).ToList());
-        mappings.AddRange(motorPinMapping.CreatePinMapping(2).ToList());
-
-        // get mapping for Distance sensor
-
+        mappings.AddRange(motorPinMapping.CreatePinMapping(1));
+        mappings.AddRange(motorPinMapping.CreatePinMapping(2));
+        mappings.AddRange(distanceSensorPinMapping.CreatePinMapping());
 
         gpio.Initialize(mappings);
 
@@ -68,6 +69,14 @@ namespace IoTVehicle.Api
 
         return new DriveServiceFactory(motor1, motor2, pinMappingService, logger);
       });
+      services.AddTransient<IDistanceSensorDriver>(sp =>
+      {
+        var logger = sp.GetService<ILogger<DistanceSensorDriver>>();
+        var gpio = sp.GetService<IGpio>();
+        var pinMapping = sp.GetService<IDistanceSensorPinMapping>();
+
+        return new DistanceSensorDriver(gpio, logger, pinMapping.CreatePinMapping());
+      });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,6 +97,7 @@ namespace IoTVehicle.Api
         endpoints.MapGet("/stop", VehicleEndpoints.Stop);
         endpoints.MapGet("/turnleft", VehicleEndpoints.TurnLeft);
         endpoints.MapGet("/turnright", VehicleEndpoints.TurnRight);
+        endpoints.MapGet("/getdistance", VehicleEndpoints.MeasureDistance);
       });
 
       appLifetime.ApplicationStopping.Register(OnShuttingDown, app.ApplicationServices);

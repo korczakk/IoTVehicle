@@ -87,9 +87,9 @@ namespace MotorDriver
 
     private MotorState GetMotorState()
     {
-      var input1 = this.gpioController.ReadPin(pinMapping[MotorPinNames.Input1].PinNumber);
-      var input2 = this.gpioController.ReadPin(pinMapping[MotorPinNames.Input2].PinNumber);
-      var pwm = this.gpioController.ReadPin(pinMapping[MotorPinNames.Pwm].PinNumber);
+      var input1 = this.gpioController.CheckPinState(pinMapping[MotorPinNames.Input1].PinNumber);
+      var input2 = this.gpioController.CheckPinState(pinMapping[MotorPinNames.Input2].PinNumber);
+      var pwm = this.gpioController.CheckPinState(pinMapping[MotorPinNames.Pwm].PinNumber);
 
       if (input1 == PinValue.High && input2 == PinValue.Low && pwm == PinValue.High)
       {

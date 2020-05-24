@@ -4,12 +4,14 @@ using System.Device.Gpio;
 
 namespace IoT.Shared
 {
-    public interface IGpio : IDisposable
-    {
-        void Initialize(IEnumerable<IPin> pinMapping);
+  public interface IGpio : IDisposable
+  {
+    void Initialize(IEnumerable<IPin> pinMapping);
 
-        void SetPin(int pinNumber, PinValue pinValue);
+    void SetPin(int pinNumber, PinValue pinValue);
 
-        PinValue ReadPin(int pinNumber);
-    }
+    PinValue CheckPinState(int pinNumber);
+
+    PinValue ReadPin(int pinNumber);
+  }
 }

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DistanceSensorDriver\DistanceSensorDriver.csproj" />
     <ProjectReference Include="..\MotorDriver\MotorDriver.csproj" />
   </ItemGroup>
 

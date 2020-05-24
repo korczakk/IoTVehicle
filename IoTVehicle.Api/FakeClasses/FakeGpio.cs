@@ -33,7 +33,7 @@ namespace IoTVehicle.Api.FakeClasses
       }
     }
 
-    public PinValue ReadPin(int pinNumber)
+    public PinValue CheckPinState(int pinNumber)
     {
       if (pinNumber == 0)
       {
@@ -54,6 +54,11 @@ namespace IoTVehicle.Api.FakeClasses
       pinState[pinNumber] = pinValue;
 
       logger.LogInformation($"Set value {pinValue} to the PIN number {pinNumber}");
+    }
+
+    public PinValue ReadPin(int pinNumber)
+    {
+      return PinValue.Low;
     }
   }
 }

@@ -61,7 +61,13 @@ namespace IoT.Shared
       }
     }
 
-    public PinValue ReadPin(int pinNumber)
+    /// <summary>
+    /// Gets Pin state stored in object state. This is not a real pin value read
+    /// from device.
+    /// </summary>
+    /// <param name="pinNumber"></param>
+    /// <returns></returns>
+    public PinValue CheckPinState(int pinNumber)
     {
       if (pinNumber == 0)
       {
@@ -70,6 +76,11 @@ namespace IoT.Shared
       }
 
       return pinState[pinNumber];
+    }
+
+    public PinValue ReadPin(int pinNumber)
+    {
+      return controller.Read(pinNumber);
     }
 
     private void OpenPin(IPin pin)
