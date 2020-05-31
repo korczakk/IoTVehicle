@@ -2,12 +2,13 @@
 
 namespace IoTVehicle.Api.Services
 {
-    public interface IDriveService
-    {
-        void GoBackward();
-        void GoForward();
-        void StopDrive();
-        Task TurnLeft();
-        Task TurnRight();
-    }
+  public interface IDriveService
+  {
+    void GoBackward();
+    void GoForward();
+    void StopDrive();
+    Task TurnLeft();
+    Task TurnRight();
+    bool IsGoingForward();
+  }
 }

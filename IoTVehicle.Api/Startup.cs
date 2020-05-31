@@ -8,6 +8,7 @@ using IoTVehicle.Api.EndPoints;
 using IoTVehicle.Api.FakeClasses;
 using IoTVehicle.Api.PinMappings;
 using IoTVehicle.Api.Services;
+using IoTVehicle.Api.Workers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -40,7 +41,7 @@ namespace IoTVehicle.Api
       services.AddTransient<IDistanceSensorPinMapping>(sp => new DistanceSensorPinMapping(configuration));
       services.AddSingleton<IGpio>(sp =>
       {
-        var gpio = new Gpio(sp.GetService<ILogger<Gpio>>());
+        var gpio = new FakeGpio(sp.GetService<ILogger<Gpio>>());
         var motorPinMapping = sp.GetService<IMotorPinMapping>();
         var distanceSensorPinMapping = sp.GetService<IDistanceSensorPinMapping>();
 
@@ -76,6 +77,15 @@ namespace IoTVehicle.Api
         var pinMapping = sp.GetService<IDistanceSensorPinMapping>();
 
         return new DistanceSensorDriver(gpio, logger, pinMapping.CreatePinMapping());
+      });
+
+      services.AddHostedService<DistanceMeasurementWorker>(sp =>
+      {
+        var logger = sp.GetService<ILogger<DistanceMeasurementWorker>>();
+        var distanceSensor = sp.GetService<IDistanceSensorDriver>();
+        var driverServiceFactory = sp.GetService<IDriveServiceFactory>();
+
+        return new DistanceMeasurementWorker(logger, distanceSensor, driverServiceFactory);
       });
     }
 

@@ -38,7 +38,7 @@ namespace DistanceSensor
       // Wait for High state on echo pin
       waitingForEcho.Reset();
       waitingForEcho.Start();
-      while (gpio.ReadPin(pinMapping[DistanceSensorPinNames.Echo].PinNumber) == PinValue.Low && waitingForEcho.Elapsed.TotalSeconds <= 1) { }
+      while (gpio.ReadPin(pinMapping[DistanceSensorPinNames.Echo].PinNumber) == PinValue.Low && waitingForEcho.Elapsed.TotalMilliseconds <= 100) { }
       waitingForEcho.Stop();
       // logger.LogInformation($"Waiting for High value on Echo pin: {waitingForEcho.Elapsed.Milliseconds}");
 

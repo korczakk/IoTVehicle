@@ -67,5 +67,10 @@ namespace IoTVehicle.Api.Services
 
       logger.LogInformation("All stop.");
     }
+
+    public bool IsGoingForward()
+    {
+
+    }
   }
 }
