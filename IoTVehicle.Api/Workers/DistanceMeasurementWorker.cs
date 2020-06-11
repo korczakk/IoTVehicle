@@ -32,7 +32,6 @@ namespace IoTVehicle.Api.Workers
       {
         double distance = await this.distanceSensor.MeasureDistance();
 
-        // TODO: add condition checking if vehicle goes forward
         if (distance <= 10 && driveService.IsGoingForward())
         {
           logger.LogInformation("Distance less than 15 cm. Stopping.");

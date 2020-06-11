@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 namespace MotorDriver
 {
-    public interface IMotor
-    {
-        void Initialize(IEnumerable<MotorPin> pinMapping);
+  public interface IMotor
+  {
+    void Initialize(IEnumerable<MotorPin> pinMapping);
 
-        void StartClockWise();
+    void StartClockWise();
 
-        void StartCounterClockWise();
+    void StartCounterClockWise();
 
-        void Stop();
-    }
+    void Stop();
+
+    MotorState GetMotorState();
+  }
 }

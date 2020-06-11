@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Logging;
 using MotorDriver;
 using System;
 using System.Threading.Tasks;
@@ -68,9 +69,16 @@ namespace IoTVehicle.Api.Services
       logger.LogInformation("All stop.");
     }
 
+    /// <summary>
+    /// Vehicle is moving forward if one of the motors is spinnign clockwise.
+    /// </summary>
+    /// <returns></returns>
     public bool IsGoingForward()
     {
+      MotorState motor1State = motor1.GetMotorState();
+      MotorState motor2State = motor2.GetMotorState();
 
+      return motor1State == MotorState.SpinningClockWise || motor2State == MotorState.SpinningClockWise;
     }
   }
 }

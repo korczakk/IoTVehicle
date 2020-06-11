@@ -85,7 +85,7 @@ namespace MotorDriver
       logger.LogInformation("Motor has been stopped");
     }
 
-    private MotorState GetMotorState()
+    public MotorState GetMotorState()
     {
       var input1 = this.gpioController.CheckPinState(pinMapping[MotorPinNames.Input1].PinNumber);
       var input2 = this.gpioController.CheckPinState(pinMapping[MotorPinNames.Input2].PinNumber);
