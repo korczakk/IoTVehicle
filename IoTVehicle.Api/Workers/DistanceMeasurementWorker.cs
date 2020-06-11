@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IoTVehicle.Api.Workers
 {
-  public class DistanceMeasurementWorker : IHostedService
+  public class DistanceMeasurementWorker : BackgroundService
   {
     private readonly ILogger logger;
     private IDistanceSensorDriver distanceSensor;
@@ -26,9 +26,9 @@ namespace IoTVehicle.Api.Workers
       driveService = driverServiceFactory.GetDriveService();
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-      while (!cancellationToken.IsCancellationRequested)
+      while (!stoppingToken.IsCancellationRequested)
       {
         double distance = await this.distanceSensor.MeasureDistance();
 
@@ -39,13 +39,8 @@ namespace IoTVehicle.Api.Workers
           driveService.StopDrive();
         }
 
-        await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken);
+        await Task.Delay(TimeSpan.FromMilliseconds(250), stoppingToken);
       }
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-      return Task.CompletedTask;
     }
   }
 }
