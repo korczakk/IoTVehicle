@@ -27,12 +27,37 @@ namespace IoTVehicle.Api.Services
       logger.LogInformation("Moving forward.");
     }
 
+    /// <summary>
+    /// </summary>
+    /// <param name="moveTime">In milliseconds</param>
+    public async Task GoForward(int moveTime)
+    {
+      motor1.StartClockWise();
+      motor2.StartClockWise();
+
+      await Task.Delay(TimeSpan.FromMilliseconds(moveTime));
+
+      motor1.Stop();
+      motor2.Stop();
+    }
+
     public void GoBackward()
     {
       motor1.StartCounterClockWise();
       motor2.StartCounterClockWise();
 
       logger.LogInformation("Moving backward.");
+    }
+
+    public async Task GoBackward(int moveTime)
+    {
+      motor1.StartCounterClockWise();
+      motor2.StartCounterClockWise();
+
+      await Task.Delay(TimeSpan.FromMilliseconds(moveTime));
+
+      motor1.Stop();
+      motor2.Stop();
     }
 
     public async Task TurnLeft()
@@ -48,6 +73,15 @@ namespace IoTVehicle.Api.Services
       logger.LogInformation("Turned left.");
     }
 
+    public async Task TurnLeft(int moveTime)
+    {
+      motor2.StartClockWise();
+
+      await Task.Delay(TimeSpan.FromMilliseconds(moveTime));
+
+      motor2.Stop();
+    }
+
     public async Task TurnRight()
     {
       motor2.Stop();
@@ -59,6 +93,15 @@ namespace IoTVehicle.Api.Services
       motor2.StartClockWise();
 
       logger.LogInformation("Turned right.");
+    }
+
+    public async Task TurnRight(int moveTime)
+    {
+      motor1.StartClockWise();
+
+      await Task.Delay(TimeSpan.FromMilliseconds(moveTime));
+
+      motor1.Stop();
     }
 
     public void StopDrive()
