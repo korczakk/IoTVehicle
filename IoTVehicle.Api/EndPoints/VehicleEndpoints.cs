@@ -5,6 +5,7 @@ using MotorDriver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace IoTVehicle.Api.EndPoints
@@ -17,7 +18,7 @@ namespace IoTVehicle.Api.EndPoints
 
       driveService.GoForward();
 
-      await context.Response.WriteAsync("Moving forward completed.");
+      await context.Response.WriteAsync(JsonSerializer.Serialize("Moving forward completed."));
     }
 
     public static async Task Stop(HttpContext context)
@@ -26,7 +27,7 @@ namespace IoTVehicle.Api.EndPoints
 
       driveService.StopDrive();
 
-      await context.Response.WriteAsync("Full stop");
+      await context.Response.WriteAsync(JsonSerializer.Serialize("Full stop"));
     }
 
     public static async Task TurnLeft(HttpContext context)
@@ -35,7 +36,7 @@ namespace IoTVehicle.Api.EndPoints
 
       await driveService.TurnLeft();
 
-      await context.Response.WriteAsync("Turning left");
+      await context.Response.WriteAsync(JsonSerializer.Serialize("Turning left"));
     }
 
     public static async Task TurnRight(HttpContext context)
@@ -44,7 +45,7 @@ namespace IoTVehicle.Api.EndPoints
 
       await driveService.TurnRight();
 
-      await context.Response.WriteAsync("Turning right");
+      await context.Response.WriteAsync(JsonSerializer.Serialize("Turning right"));
     }
 
     public static async Task GoBackward(HttpContext context)
@@ -53,12 +54,12 @@ namespace IoTVehicle.Api.EndPoints
 
       driveService.GoBackward();
 
-      await context.Response.WriteAsync("Mowing back");
+      await context.Response.WriteAsync(JsonSerializer.Serialize("Mowing back"));
     }
 
     public static async Task Index(HttpContext context)
     {
-      await context.Response.WriteAsync("Possible endpoints: GoForward, GoBackWard, TurnLeft, TurnRight");
+      await context.Response.WriteAsync(JsonSerializer.Serialize("Possible endpoints: GoForward, GoBackWard, TurnLeft, TurnRight"));
     }
 
     public static async Task MeasureDistance(HttpContext context)
@@ -68,7 +69,7 @@ namespace IoTVehicle.Api.EndPoints
 
       var measurement = await sensorDriver.MeasureDistance();
 
-      await context.Response.WriteAsync(measurement.ToString());
+      await context.Response.WriteAsync(JsonSerializer.Serialize(measurement.ToString()));
     }
 
     private static IDriveService GetDriveService(HttpContext context)
