@@ -66,7 +66,7 @@ namespace IoTVehicle.Api.Services
 
       motor2.StartClockWise();
 
-      await Task.Delay(TimeSpan.FromMilliseconds(250));
+      await Task.Delay(TimeSpan.FromMilliseconds(500));
 
       motor1.StartClockWise();
 
@@ -88,7 +88,7 @@ namespace IoTVehicle.Api.Services
 
       motor1.StartClockWise();
 
-      await Task.Delay(TimeSpan.FromMilliseconds(250));
+      await Task.Delay(TimeSpan.FromMilliseconds(500));
 
       motor2.StartClockWise();
 

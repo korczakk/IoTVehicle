@@ -39,7 +39,7 @@ namespace IoTVehicle.Api.Workers
           driveService.StopDrive();
         }
 
-        await Task.Delay(TimeSpan.FromMilliseconds(250), stoppingToken);
+        await Task.Delay(TimeSpan.FromMilliseconds(100), stoppingToken);
       }
     }
   }

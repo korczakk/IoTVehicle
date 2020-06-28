@@ -19,8 +19,8 @@ namespace IoTVehicle.Api.Services
       this.motorPinMapping = pinMappingService;
       this.logger = logger;
 
-      motor1.Initialize(motorPinMapping.CreatePinMapping(1).ToList());
-      motor2.Initialize(motorPinMapping.CreatePinMapping(2).ToList());
+      motor1.Initialize(motorPinMapping.MotorPinMappings[1].ToList());
+      motor2.Initialize(motorPinMapping.MotorPinMappings[2].ToList());
     }
 
     public IDriveService GetDriveService()

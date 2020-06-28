@@ -33,25 +33,29 @@ namespace IoTVehicle.Api
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddCors(options => options.AddPolicy("AllowedOrigins", 
+      services.AddCors(options => options.AddPolicy("AllowedOrigins",
         builder => builder.WithOrigins("http://localhost:8100"))
       );
 
       services.AddLogging(x => x.AddConsole());
-      services.AddTransient<IMotorPinMapping>(sp =>
+      services.AddSingleton<IMotorPinMapping>(sp =>
       {
-        return new MotorPinMapping(configuration);
+        var pinMapping = new MotorPinMapping(configuration);
+        pinMapping.CreatePinMapping(1);
+        pinMapping.CreatePinMapping(2);
+
+        return pinMapping;
       });
       services.AddTransient<IDistanceSensorPinMapping>(sp => new DistanceSensorPinMapping(configuration));
       services.AddSingleton<IGpio>(sp =>
       {
-        var gpio = new FakeGpio(sp.GetService<ILogger<Gpio>>());
+        var gpio = new Gpio(sp.GetService<ILogger<Gpio>>());
         var motorPinMapping = sp.GetService<IMotorPinMapping>();
         var distanceSensorPinMapping = sp.GetService<IDistanceSensorPinMapping>();
 
         var mappings = new List<IPin>();
-        mappings.AddRange(motorPinMapping.CreatePinMapping(1));
-        mappings.AddRange(motorPinMapping.CreatePinMapping(2));
+        mappings.AddRange(motorPinMapping.MotorPinMappings[1]);
+        mappings.AddRange(motorPinMapping.MotorPinMappings[2]);
         mappings.AddRange(distanceSensorPinMapping.CreatePinMapping());
 
         gpio.Initialize(mappings);
@@ -100,7 +104,7 @@ namespace IoTVehicle.Api
       {
         app.UseDeveloperExceptionPage();
       }
-      
+
       app.UseRouting();
       app.UseCors("AllowedOrigins");
 
