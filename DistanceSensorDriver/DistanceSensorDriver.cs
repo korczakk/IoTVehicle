@@ -53,7 +53,7 @@ namespace DistanceSensor
       var distance = (duration * 34.0) / 1000 / 2;
       logger.LogInformation($"Measured distance: {distance} ({Math.Round(distance)})");
 
-      return await Task.FromResult(distance);
+      return await Task.FromResult(distance > 200 ? 200 : distance);
     }
   }
 }

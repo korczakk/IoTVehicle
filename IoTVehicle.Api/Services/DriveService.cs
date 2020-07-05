@@ -62,11 +62,12 @@ namespace IoTVehicle.Api.Services
 
     public async Task TurnLeft()
     {
-      motor1.Stop();
+      //motor1.Stop();
+      motor1.StartCounterClockWise();
 
       motor2.StartClockWise();
 
-      await Task.Delay(TimeSpan.FromMilliseconds(500));
+      await Task.Delay(TimeSpan.FromMilliseconds(1250));
 
       motor1.StartClockWise();
 
@@ -84,11 +85,12 @@ namespace IoTVehicle.Api.Services
 
     public async Task TurnRight()
     {
-      motor2.Stop();
+      // motor2.Stop();
+      motor2.StartCounterClockWise();
 
       motor1.StartClockWise();
 
-      await Task.Delay(TimeSpan.FromMilliseconds(500));
+      await Task.Delay(TimeSpan.FromMilliseconds(1250));
 
       motor2.StartClockWise();
 
