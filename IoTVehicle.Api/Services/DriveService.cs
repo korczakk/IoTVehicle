@@ -62,7 +62,6 @@ namespace IoTVehicle.Api.Services
 
     public async Task TurnLeft()
     {
-      //motor1.Stop();
       motor1.StartCounterClockWise();
 
       motor2.StartClockWise();
@@ -85,7 +84,6 @@ namespace IoTVehicle.Api.Services
 
     public async Task TurnRight()
     {
-      // motor2.Stop();
       motor2.StartCounterClockWise();
 
       motor1.StartClockWise();
