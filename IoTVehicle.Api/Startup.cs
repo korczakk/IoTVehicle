@@ -8,6 +8,7 @@ using IoTVehicle.Api.EndPoints;
 using IoTVehicle.Api.FakeClasses;
 using IoTVehicle.Api.PinMappings;
 using IoTVehicle.Api.Services;
+using IoTVehicle.Api.SignalRHubs;
 using IoTVehicle.Api.Workers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,8 +35,13 @@ namespace IoTVehicle.Api
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddCors(options => options.AddPolicy("AllowedOrigins",
-        builder => builder.WithOrigins("http://localhost:8100"))
+        builder => builder
+        .WithOrigins("http://localhost:8100")
+        .AllowAnyHeader()
+        .WithMethods("POST", "GET")
+        .AllowCredentials())
       );
+      services.AddSignalR();
 
       services.AddLogging(x => x.AddConsole());
       services.AddSingleton<IMotorPinMapping>(sp =>
@@ -49,7 +55,7 @@ namespace IoTVehicle.Api
       services.AddTransient<IDistanceSensorPinMapping>(sp => new DistanceSensorPinMapping(configuration));
       services.AddSingleton<IGpio>(sp =>
       {
-        var gpio = new Gpio(sp.GetService<ILogger<Gpio>>());
+        var gpio = new FakeGpio(sp.GetService<ILogger<Gpio>>());
         var motorPinMapping = sp.GetService<IMotorPinMapping>();
         var distanceSensorPinMapping = sp.GetService<IDistanceSensorPinMapping>();
 
@@ -121,6 +127,8 @@ namespace IoTVehicle.Api
         endpoints.MapPost("/advancedcontrol/gobackward/{moveTime}", VehicleAdvancedEndpoints.GoBackward);
         endpoints.MapPost("/advancedcontrol/turnleft/{moveTime}", VehicleAdvancedEndpoints.TurnLeft);
         endpoints.MapPost("/advancedcontrol/turnright/{moveTime}", VehicleAdvancedEndpoints.TurnRight);
+
+        endpoints.MapHub<VehicleControlHub>("/signalr/vehiclecontrol");
       });
 
       appLifetime.ApplicationStopping.Register(OnShuttingDown, app.ApplicationServices);
