@@ -36,7 +36,7 @@ namespace IoTVehicle.Api
     {
       services.AddCors(options => options.AddPolicy("AllowedOrigins",
         builder => builder
-        .WithOrigins("http://localhost:8100")
+        .WithOrigins("http://localhost:8100", "http://localhost")
         .AllowAnyHeader()
         .WithMethods("POST", "GET")
         .AllowCredentials())
@@ -55,7 +55,7 @@ namespace IoTVehicle.Api
       services.AddTransient<IDistanceSensorPinMapping>(sp => new DistanceSensorPinMapping(configuration));
       services.AddSingleton<IGpio>(sp =>
       {
-        var gpio = new FakeGpio(sp.GetService<ILogger<Gpio>>());
+        var gpio = new Gpio(sp.GetService<ILogger<Gpio>>());
         var motorPinMapping = sp.GetService<IMotorPinMapping>();
         var distanceSensorPinMapping = sp.GetService<IDistanceSensorPinMapping>();
 
