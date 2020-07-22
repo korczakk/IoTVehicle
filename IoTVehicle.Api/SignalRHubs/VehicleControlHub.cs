@@ -1,13 +1,22 @@
-﻿using IoTVehicle.Api.Services;
+﻿using DistanceSensor;
+using IoTVehicle.Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IoTVehicle.Api.SignalRHubs
 {
   public class VehicleControlHub : Hub
   {
+    private readonly IDistanceSensorDriver distanceSensorDriver;
+
+    public VehicleControlHub(IDistanceSensorDriver distanceSensorDriver)
+    {
+      this.distanceSensorDriver = distanceSensorDriver;
+    }
+
     public void GoForward()
     {
       var driveService = GetDriveService(Context.GetHttpContext());
@@ -41,6 +50,11 @@ namespace IoTVehicle.Api.SignalRHubs
       var driveService = GetDriveService(Context.GetHttpContext());
 
       driveService.GoBackward();
+    }
+
+    public IAsyncEnumerable<double> GetDistanceMeasurement()
+    {
+      return distanceSensorDriver.MeasurementsChannel.Reader.ReadAllAsync();
     }
 
     private IDriveService GetDriveService(HttpContext context)

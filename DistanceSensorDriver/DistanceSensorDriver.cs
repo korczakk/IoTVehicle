@@ -56,10 +56,10 @@ namespace DistanceSensor
       var duration = echoDuration.Elapsed.Ticks / 10;
       logger.LogDebug($"High value duration: {duration} microseconds");
 
-      var distance = (duration * 34.0) / 1000 / 2;
+      var distance = (duration * 34) / 1000 / 2;
       logger.LogDebug($"Measured distance: {distance}");
 
-      await MeasurementsChannel.Writer.WriteAsync(distance, ct);
+      await MeasurementsChannel.Writer.WriteAsync(distance > 200 ? 200 : distance, ct);
 
       return distance > 200 ? 200 : distance;
     }

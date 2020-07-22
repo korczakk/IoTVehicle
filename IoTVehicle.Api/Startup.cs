@@ -131,7 +131,6 @@ namespace IoTVehicle.Api
         endpoints.MapPost("/advancedcontrol/turnright/{moveTime}", VehicleAdvancedEndpoints.TurnRight);
 
         endpoints.MapHub<VehicleControlHub>("/signalr/vehiclecontrol");
-        endpoints.MapHub<DistanceMeasurementHub>("/signalr/distance");
       });
 
       appLifetime.ApplicationStopping.Register(OnShuttingDown, app.ApplicationServices);

@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace IoTVehicle.Api.FakeClasses
 {
-  public class FakeDistanceSensor : IDistanceSensorDriver
+  public class FakeDistanceSensorDriver : IDistanceSensorDriver
   {
     public Channel<double> MeasurementsChannel { get; }
     private double distance = 0.0;
 
-    public FakeDistanceSensor(IGpio gpio, ILogger logger, IEnumerable<DistanceSensorPin> pinMapping)
+    public FakeDistanceSensorDriver(IGpio gpio, ILogger logger, IEnumerable<DistanceSensorPin> pinMapping)
     {
       MeasurementsChannel = Channel.CreateBounded<double>(new BoundedChannelOptions(21)
       {
