@@ -37,7 +37,7 @@ namespace IoTVehicle.Api.FakeClasses
     {
       if (pinNumber == 0)
       {
-        logger.LogInformation("I will not read from PIN 0 to any value.");
+        logger.LogDebug("I will not read from PIN 0 to any value.");
         return PinValue.Low;
       }
 
@@ -48,12 +48,12 @@ namespace IoTVehicle.Api.FakeClasses
     {
       if (pinNumber == 0)
       {
-        logger.LogInformation("I will not set PIN 0 to any value.");
+        logger.LogDebug("I will not set PIN 0 to any value.");
         return;
       }
       pinState[pinNumber] = pinValue;
 
-      logger.LogInformation($"Set value {pinValue} to the PIN number {pinNumber}");
+      logger.LogDebug($"Set value {pinValue} to the PIN number {pinNumber}");
     }
 
     public PinValue ReadPin(int pinNumber)

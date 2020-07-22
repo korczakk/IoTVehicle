@@ -30,11 +30,11 @@ namespace IoTVehicle.Api.Workers
     {
       while (!stoppingToken.IsCancellationRequested)
       {
-        double distance = await this.distanceSensor.MeasureDistance();
+        double distance = await this.distanceSensor.MeasureDistance(stoppingToken);
 
         if (distance <= 25 && driveService.IsGoingForward())
         {
-          logger.LogInformation("Distance less than 25 cm. Stopping.");
+          logger.LogDebug("Distance less than 25 cm. Stopping.");
 
           driveService.StopDrive();
         }

@@ -66,8 +66,8 @@ namespace IoTVehicle.Api.EndPoints
     {
       var services = context.RequestServices;
       var sensorDriver = services.GetService(typeof(IDistanceSensorDriver)) as IDistanceSensorDriver;
-
-      var measurement = await sensorDriver.MeasureDistance();
+      
+      var measurement = await sensorDriver.MeasureDistance(default);
 
       await context.Response.WriteAsync(JsonSerializer.Serialize(measurement.ToString()));
     }

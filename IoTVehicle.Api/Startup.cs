@@ -43,7 +43,9 @@ namespace IoTVehicle.Api
       );
       services.AddSignalR();
 
-      services.AddLogging(x => x.AddConsole());
+      services.AddLogging(x => 
+        x.AddConsole()
+        .SetMinimumLevel(LogLevel.Information));
       services.AddSingleton<IMotorPinMapping>(sp =>
       {
         var pinMapping = new MotorPinMapping(configuration);
@@ -84,7 +86,7 @@ namespace IoTVehicle.Api
 
         return new DriveServiceFactory(motor1, motor2, pinMappingService, logger);
       });
-      services.AddTransient<IDistanceSensorDriver>(sp =>
+      services.AddSingleton<IDistanceSensorDriver>(sp =>
       {
         var logger = sp.GetService<ILogger<DistanceSensorDriver>>();
         var gpio = sp.GetService<IGpio>();
@@ -129,6 +131,7 @@ namespace IoTVehicle.Api
         endpoints.MapPost("/advancedcontrol/turnright/{moveTime}", VehicleAdvancedEndpoints.TurnRight);
 
         endpoints.MapHub<VehicleControlHub>("/signalr/vehiclecontrol");
+        endpoints.MapHub<DistanceMeasurementHub>("/signalr/distance");
       });
 
       appLifetime.ApplicationStopping.Register(OnShuttingDown, app.ApplicationServices);

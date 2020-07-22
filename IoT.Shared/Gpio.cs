@@ -36,21 +36,21 @@ namespace IoT.Shared
         OpenPin(pin);
       }
 
-      logger.LogInformation($"Opened pins from {pinMapping.Count()} mappings.");
+      logger.LogDebug($"Opened pins from {pinMapping.Count()} mappings.");
     }
 
     public void SetPin(int pinNumber, PinValue pinValue)
     {
       if (pinNumber == 0)
       {
-        logger.LogInformation("I will not set PIN 0 to any value.");
+        logger.LogDebug("I will not set PIN 0 to any value.");
         return;
       }
 
       controller.Write(pinNumber, pinValue);
       pinState[pinNumber] = pinValue;
 
-      logger.LogInformation($"PIN {pinNumber} set to value {pinValue}");
+      logger.LogDebug($"PIN {pinNumber} set to value {pinValue}");
     }
 
     public void Dispose()
@@ -71,7 +71,7 @@ namespace IoT.Shared
     {
       if (pinNumber == 0)
       {
-        logger.LogInformation("I will not read from PIN 0.");
+        logger.LogDebug("I will not read from PIN 0.");
         return PinValue.Low;
       }
 
