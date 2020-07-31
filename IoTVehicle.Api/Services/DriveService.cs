@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using MotorDriver;
 using System;
 using System.Threading.Tasks;
@@ -27,18 +26,14 @@ namespace IoTVehicle.Api.Services
       logger.LogInformation("Moving forward.");
     }
 
-    /// <summary>
-    /// </summary>
-    /// <param name="moveTime">In milliseconds</param>
-    public async Task GoForward(int moveTime)
+    public void GoForwardLeft()
     {
       motor1.StartClockWise();
+    }
+
+    public void GoForwardRight()
+    {
       motor2.StartClockWise();
-
-      await Task.Delay(TimeSpan.FromMilliseconds(moveTime));
-
-      motor1.Stop();
-      motor2.Stop();
     }
 
     public void GoBackward()
@@ -49,15 +44,14 @@ namespace IoTVehicle.Api.Services
       logger.LogInformation("Moving backward.");
     }
 
-    public async Task GoBackward(int moveTime)
+    public void GoBackwardLeft()
     {
       motor1.StartCounterClockWise();
+    }
+
+    public void GoBackwardRight()
+    {
       motor2.StartCounterClockWise();
-
-      await Task.Delay(TimeSpan.FromMilliseconds(moveTime));
-
-      motor1.Stop();
-      motor2.Stop();
     }
 
     public async Task TurnLeft()
@@ -73,15 +67,6 @@ namespace IoTVehicle.Api.Services
       logger.LogInformation("Turned left.");
     }
 
-    public async Task TurnLeft(int moveTime)
-    {
-      motor2.StartClockWise();
-
-      await Task.Delay(TimeSpan.FromMilliseconds(moveTime));
-
-      motor2.Stop();
-    }
-
     public async Task TurnRight()
     {
       motor2.StartCounterClockWise();
@@ -95,15 +80,6 @@ namespace IoTVehicle.Api.Services
       logger.LogInformation("Turned right.");
     }
 
-    public async Task TurnRight(int moveTime)
-    {
-      motor1.StartClockWise();
-
-      await Task.Delay(TimeSpan.FromMilliseconds(moveTime));
-
-      motor1.Stop();
-    }
-
     public void StopDrive()
     {
       motor1.Stop();
@@ -111,6 +87,17 @@ namespace IoTVehicle.Api.Services
 
       logger.LogInformation("All stop.");
     }
+
+    public void StopLeftDrive()
+    {
+      motor1.Stop();
+    }
+
+    public void StopRightDrive()
+    {
+      motor2.Stop();
+    }
+
 
     /// <summary>
     /// Vehicle is moving forward if one of the motors is spinnign clockwise.

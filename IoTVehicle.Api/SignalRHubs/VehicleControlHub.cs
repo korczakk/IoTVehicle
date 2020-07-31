@@ -24,12 +24,41 @@ namespace IoTVehicle.Api.SignalRHubs
       driveService.GoForward();      
     }
 
+    public void GoLeftForward()
+    {
+      var driveService = GetDriveService(Context.GetHttpContext());
+
+      driveService.GoForwardLeft();
+    }
+
+    public void GoRightForward()
+    {
+      var driveService = GetDriveService(Context.GetHttpContext());
+
+      driveService.GoForwardRight();
+    }
+
     public void Stop()
     {
       var driveService = GetDriveService(Context.GetHttpContext());
 
       driveService.StopDrive();
     }
+
+    public void StopLeft()
+    {
+      var driveService = GetDriveService(Context.GetHttpContext());
+
+      driveService.StopLeftDrive();
+    }
+
+    public void StopRight()
+    {
+      var driveService = GetDriveService(Context.GetHttpContext());
+
+      driveService.StopRightDrive();
+    }
+
 
     public async Task TurnLeft()
     {
@@ -50,6 +79,20 @@ namespace IoTVehicle.Api.SignalRHubs
       var driveService = GetDriveService(Context.GetHttpContext());
 
       driveService.GoBackward();
+    }
+
+    public void GoLeftBackward()
+    {
+      var driveService = GetDriveService(Context.GetHttpContext());
+
+      driveService.GoBackwardLeft();
+    }
+
+    public void GoRightBackward()
+    {
+      var driveService = GetDriveService(Context.GetHttpContext());
+
+      driveService.GoBackwardRight();
     }
 
     public IAsyncEnumerable<double> GetDistanceMeasurement()

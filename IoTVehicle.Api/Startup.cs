@@ -125,10 +125,6 @@ namespace IoTVehicle.Api
         endpoints.MapGet("/turnleft", VehicleEndpoints.TurnLeft);
         endpoints.MapGet("/turnright", VehicleEndpoints.TurnRight);
         endpoints.MapGet("/getdistance", VehicleEndpoints.MeasureDistance);
-        endpoints.MapPost("/advancedcontrol/goforward/{moveTime}", VehicleAdvancedEndpoints.GoForward);
-        endpoints.MapPost("/advancedcontrol/gobackward/{moveTime}", VehicleAdvancedEndpoints.GoBackward);
-        endpoints.MapPost("/advancedcontrol/turnleft/{moveTime}", VehicleAdvancedEndpoints.TurnLeft);
-        endpoints.MapPost("/advancedcontrol/turnright/{moveTime}", VehicleAdvancedEndpoints.TurnRight);
 
         endpoints.MapHub<VehicleControlHub>("/signalr/vehiclecontrol");
       });
