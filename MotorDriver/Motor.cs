@@ -70,7 +70,7 @@ namespace MotorDriver
         gpioController.SetPin(pinMapping[MotorPinNames.Input2].PinNumber, PinValue.High);
 
         gpioController.SetPin(pinMapping[MotorPinNames.Pwm].PinNumber, PinValue.High);
-        gpioController.SetPin(pinMapping[MotorPinNames.StandBy].PinNumber, PinValue.High);
+        // gpioController.SetPin(pinMapping[MotorPinNames.StandBy].PinNumber, PinValue.High);
 
         logger.LogInformation("Starting motor in counter-clockwise direction.");
       }
