@@ -81,7 +81,7 @@ namespace MotorDriver
       gpioController.SetPin(pinMapping[MotorPinNames.Input1].PinNumber, PinValue.Low);
       gpioController.SetPin(pinMapping[MotorPinNames.Input2].PinNumber, PinValue.Low);
       gpioController.SetPin(pinMapping[MotorPinNames.Pwm].PinNumber, PinValue.Low);
-      gpioController.SetPin(pinMapping[MotorPinNames.StandBy].PinNumber, PinValue.Low);
+      // gpioController.SetPin(pinMapping[MotorPinNames.StandBy].PinNumber, PinValue.Low);
 
       logger.LogInformation("Motor has been stopped");
     }
