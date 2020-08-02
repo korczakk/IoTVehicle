@@ -13,10 +13,10 @@ COPY ["DistanceSensorDriver/DistanceSensorDriver.csproj", "DistanceSensorDriver/
 RUN dotnet restore "IoTVehicle.Api/IoTVehicle.Api.csproj"
 COPY . .
 WORKDIR "/src/IoTVehicle.Api"
-RUN dotnet build "IoTVehicle.Api.csproj" -c Release -r linux-arm -o /app/build
+RUN dotnet build "IoTVehicle.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "IoTVehicle.Api.csproj" -c Release -r linux-arm -o /app/publish
+RUN dotnet publish "IoTVehicle.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
