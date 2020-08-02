@@ -1,20 +1,24 @@
-FROM pomma89/dotnet-mono:dotnet-2-mono-5-sdk AS build-env
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
+EXPOSE 80
 
-ENV FrameworkPathOverride /usr/lib/mono/4.7.2-api/
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+WORKDIR /src
+COPY ["IoTVehicle.Api/IoTVehicle.Api.csproj", "IoTVehicle.Api/"]
+COPY ["MotorDriver/MotorDriver.csproj", "MotorDriver/"]
+COPY ["IoT.Shared/IoT.Shared.csproj", "IoT.Shared/"]
+COPY ["DistanceSensorDriver/DistanceSensorDriver.csproj", "DistanceSensorDriver/"]
+RUN dotnet restore "IoTVehicle.Api/IoTVehicle.Api.csproj"
+COPY . .
+WORKDIR "/src/IoTVehicle.Api"
+RUN dotnet build "IoTVehicle.Api.csproj" -c Release -o /app/build
 
-# Copy csproj and restore as distinct layers
-COPY *.csproj ./
-RUN dotnet restore
+FROM build AS publish
+RUN dotnet publish "IoTVehicle.Api.csproj" -c Release -o /app/publish
 
-# Copy everything else and build
-COPY . ./
-RUN dotnet publish -c Release -o out -f net472
-
-# Build runtime image for ARM v5 using mono
-FROM arm32v5/mono:5.20
+FROM base AS final
 WORKDIR /app
-COPY --from=build-env /app/out .
-EXPOSE 5000
-ENV ASPNETCORE_URLS http://*:5000
-ENTRYPOINT [ "mono", "dotnet.mvc.exe" ]
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "IoTVehicle.Api.dll"]
